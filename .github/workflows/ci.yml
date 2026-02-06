@@ -9,51 +9,50 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-    - name: Setup PHP
-      uses: shivammathur/setup-php@v2
-      with:
-        php-version: '8.2'
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
 
-    - name: Validate composer.json
-      run: composer validate
+      - name: Validate composer.json
+        run: composer validate
 
-    - name: Install Dependencies
-      run: composer install --no-dev --prefer-dist --no-progress
+      - name: Install Dependencies
+        run: composer install --no-dev --prefer-dist --no-progress
 
-    - name: Run Tests
-      run: |
-        if [ -f vendor/bin/phpunit ]; then
-          vendor/bin/phpunit
-        else
-          echo "No tests found, skipping"
-        fi
+      - name: Run Tests
+        run: |
+          if [ -f vendor/bin/phpunit ]; then
+            vendor/bin/phpunit
+          else
+            echo "No tests found, skipping"
+          fi
 
   deploy:
     needs: build
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-    - name: Install Dependencies (production)
-      run: composer install --no-dev --prefer-dist --optimize-autoloader
+      - name: Install Dependencies (production)
+        run: composer install --no-dev --prefer-dist --optimize-autoloader
 
-    - name: Deploy to cPanel via SFTP
-      uses: SamKirkland/FTP-Deploy-Action@v4.3.4
-  with:
-    server: ${{ secrets.FTP_SERVER }}
-    username: ${{ secrets.FTP_USERNAME }}
-    password: ${{ secrets.FTP_PASSWORD }}
-    protocol: sftp
-    port: 22
-    local-dir: ./
-    server-dir: /public_html/ci_cd/
-    exclude: |
-      **/.git*
-      **/.github*
-      **/tests/**
-      **/node_modules/**
-      .env
-
+      - name: Deploy to cPanel via SFTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.4
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          protocol: sftp
+          port: 22
+          local-dir: ./
+          server-dir: /public_html/ci_cd/
+          exclude: |
+            **/.git*
+            **/.github*
+            **/tests/**
+            **/node_modules/**
+            .env
