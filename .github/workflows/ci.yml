@@ -48,6 +48,7 @@ jobs:
         password: ${{ secrets.FTP_PASSWORD }}
         port: ${{ secrets.FTP_PORT }}
         protocol: ftp
+        pasv: true
         local-dir: ./
         server-dir: /public_html/ci_cd/
         exclude: |
@@ -56,3 +57,4 @@ jobs:
           **/tests/**
           **/node_modules/**
           .env
+
